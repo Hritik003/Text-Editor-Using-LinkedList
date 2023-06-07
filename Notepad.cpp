@@ -1,6 +1,6 @@
 
-#include <bits/stdc++.h>
-
+#include <iostream>
+#include <string>
 using namespace std;
 
 
@@ -15,7 +15,7 @@ class Notepad
 {
     private: 
     Node* head; //head of the text editor
-    
+    int numLines=0;
     public:
     
     //constructor
@@ -52,6 +52,7 @@ class Notepad
             }
            
         }
+        numLines++;
         cout<<"Line Insertion is complete\n";
         
     }
@@ -90,6 +91,8 @@ class Notepad
                     cout<<"Wrong choice\n";
                     return;
                 }
+                
+                numLines--;
                 cout<<"Deletion of line "<<N<<" is complete\n";
             }
         
@@ -97,14 +100,88 @@ class Notepad
     }
     
     void moveLine(int n, int m){
+        if(head == NULL){
+            cout<<"No lines to move\n";
+            
+        }
+        else if(n==m){
+            cout<<"from and to position are same\n";
+            return;
+        }
+        else{
+        Node* node_n=head;
+        Node* node_m=head;
+        Node* node_m_prev=NULL;
+        Node* node_n_prev=NULL;
+        for(int i=1;i<=n-1;i++){
+            if(node_n){
+                node_n_prev=node_n;
+                node_n=node_n->next;
+            }
+        }
+        
+        for(int i=1;i<=m-1;i++){
+            if(node_m){
+                node_m_prev=node_m;
+                node_m=node_m->next;
+            }
+        }
+        
+        if(node_m==NULL || node_n==NULL){
+            cout<<"wrong choice\n";
+            return;
+        }
+        
+        if(node_n_prev){
+            node_n_prev->next = node_n->next;
+        }
+        else{
+            head->next= node_n->next;
+        }
+        
+        if(node_m_prev){
+            node_m_prev->next = node_n;
+        }
+        else{
+            head = node_n;
+        }
+        
+        node_n->next=node_m;
+        
+        cout<<"Moved Successfully\n";
+        }
         
     }
     
     void replace(int line, string text){
-        
+        if(head==NULL){
+            cout<<"No lines to replace\n";
+        }
+        Node* node=head;
+        for(int i=1;i<=line-1;i++){
+            if(node){
+                node=node->next;
+            }
+            else{
+                cout<<"wrong choice\n"<<line<<endl;
+                return;
+            }
+        }
+        if(node){
+            node->line = text;
+            cout<<"Replace Operation complete.\n";
+        }
+        else{
+            cout<<"wrong choice\n";
+            return;
+        }
     }
     
     void printAll(){
+        if(head == NULL){
+            cout<<"No lines to print\n";
+            return;
+        }
         Node* temp = head;
         
         while(temp){
@@ -130,7 +207,7 @@ class Notepad
         
     }
     
-    void printPrevioudpage(){
+    void printPreviouspage(){
         
     }
     
@@ -143,7 +220,7 @@ int main()
 {
     Notepad editor;
     string text;
-    int choice,position;
+    int choice,position, fromPos, toPos;
     do{
         cout<<"========TEXT EDITOR========\n"<<endl;
         cout<<"Please choose what you want to do\n";
@@ -162,32 +239,36 @@ int main()
         
         switch(choice){
             case 1:
-            cout<<"Enter the text: \n";
+            cout<<"Enter the text: ";
             cin.ignore();
             getline(cin,text);
-            cout<<"enter line you want the text to be placed into : "<<endl;
+            cout<<"enter line you want the text to be placed into : ";
             cin>>position;
             editor.Insert(position,text);
             break;
             
             case 2:
-            cout<<"Enter the line to be deleted: "<<endl;
+            cout<<"Enter the line to be deleted: ";
             cin>>position;
             editor.Delete(position);
             break;
             
             case 3:
-            
-            
-            
+            cout<<"Enter the from position of the line: ";
+            cin>>fromPos;
+            cout<<"Enter the to position of the line: ";
+            cin>>toPos;
+            editor.moveLine(fromPos,toPos);
             break;
             
             case 4:
-            
-            
+            cout<<"Enter the position to replace: ";
+            cin>>position;
+            cout<<"Enter the text: ";
+            cin.ignore();
+            getline(cin,text);
+            editor.replace(position,text);
             break;
-            
-            
             
             case 5:
             editor.printAll();
